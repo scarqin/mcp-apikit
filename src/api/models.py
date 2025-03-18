@@ -1,16 +1,48 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, root_validator
 from typing import List, Dict, Any, Optional
 
 class ApiBasicInfo(BaseModel):
     """
     Basic information about an API.
     """
-    id: str = Field(..., description="Unique identifier for the API")
-    name: str = Field(..., description="Name of the API")
-    method: str = Field(..., description="HTTP method (GET, POST, etc.)")
-    path: str = Field(..., description="API path")
-    description: Optional[str] = Field(None, description="API description")
-    group: Optional[str] = Field(None, description="API group or category")
+    api_id: str = Field(..., description="Unique identifier for the API")
+    api_name: str = Field(..., description="Name of the API")
+    api_uri: str = Field(..., description="API path")
+    api_status: int = Field(0, description="API status")
+    api_request_type: int = Field(0, description="API request type")
+    create_time: str = Field(None, description="Creation time")
+    group_id: int = Field(None, description="Group ID")
+    api_update_time: str = Field(None, description="Update time")
+    starred: int = Field(0, description="Whether the API is starred")
+    order_num: int = Field(0, description="Order number")
+    remove_time: Optional[str] = Field(None, description="Remove time")
+    api_protocol: int = Field(0, description="API protocol")
+    api_type: str = Field("http", description="API type")
+    api_manager_id: int = Field(0, description="API manager ID")
+    update_user_id: int = Field(0, description="Update user ID")
+    create_user_id: int = Field(0, description="Create user ID")
+    group_path: str = Field(None, description="Group path")
+    group_name: str = Field(None, description="Group name")
+    customize_list: List[Any] = Field(default_factory=list, description="Customize list")
+    version_name: str = Field("", description="Version name")
+    mock_enable: bool = Field(True, description="Mock enable")
+    case_cover: bool = Field(False, description="Case cover")
+    message_encoding: str = Field("utf-8", description="Message encoding")
+    api_tag: str = Field("", description="API tag")
+    manager: Optional[str] = Field(None, description="Manager")
+    creator: Optional[str] = Field(None, description="Creator")
+    updater: Optional[str] = Field(None, description="Updater")
+
+    class Config:
+        orm_mode = True
+
+class Paginator(BaseModel):
+    """
+    Pagination information.
+    """
+    page: int = Field(1, description="Current page number")
+    size: int = Field(10, description="Items per page")
+    total: int = Field(0, description="Total number of items")
 
     class Config:
         orm_mode = True
@@ -69,7 +101,8 @@ class ApiListResponse(BaseModel):
     """
     Response model for API list endpoint.
     """
-    apis: List[ApiBasicInfo] = Field(..., description="List of APIs")
+    paginator: Paginator = Field(..., description="Pagination information")
+    items: List[ApiBasicInfo] = Field(..., description="List of APIs")
 
     class Config:
         orm_mode = True
@@ -89,6 +122,17 @@ class ErrorResponse(BaseModel):
     """
     error: str = Field(..., description="Error message")
     details: Optional[str] = Field(None, description="Error details")
+
+    class Config:
+        orm_mode = True
+
+class StandardResponse(BaseModel):
+    """
+    Standard API response format.
+    """
+    type: str = Field("array", description="Response type")
+    data: Any = Field(..., description="Response data")
+    status: str = Field("success", description="Response status")
 
     class Config:
         orm_mode = True

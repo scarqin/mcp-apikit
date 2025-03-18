@@ -11,6 +11,10 @@ class ConfigManager:
     def __init__(self, config_path: str = "config/config.json"):
         self.config_path = config_path
         self.config = self._load_config()
+        
+        # Auto-create config file if it doesn't exist
+        if not os.path.exists(self.config_path):
+            self.save_config()
     
     def _load_config(self) -> Dict[str, Any]:
         """
