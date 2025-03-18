@@ -90,8 +90,20 @@ class EolinkClient:
         if "error" in response:
             return []
         
+        # Extract API items from the nested structure
+        # The response format is:
+        # {
+        #   "type": "array",
+        #   "data": {
+        #     "paginator": { "page": 1, "size": 10, "total": 11 },
+        #     "items": [ ... API items ... ]
+        #   }
+        # }
+        apis = []
+        if "data" in response and isinstance(response["data"], dict):
+            apis = response["data"].get("items", [])
+        
         # Cache the response
-        apis = response.get("data", [])
         self.cache[cache_key] = apis
         self.cache_timestamps[cache_key] = time.time()
         

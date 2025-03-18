@@ -332,18 +332,28 @@ def create_default_templates():
                     
                     const data = await response.json();
                     
-                    if (data.apis && data.apis.length > 0) {
+                    if (data.data && data.data.items && data.data.items.length > 0) {
                         let html = '<ul class="api-list">';
                         
-                        data.apis.forEach(api => {
-                            const methodClass = api.method.toLowerCase();
+                        data.data.items.forEach(api => {
+                            // Determine the HTTP method based on api_request_type
+                            let method = 'GET';
+                            if (api.api_request_type === 1) {
+                                method = 'POST';
+                            } else if (api.api_request_type === 2) {
+                                method = 'PUT';
+                            } else if (api.api_request_type === 3) {
+                                method = 'DELETE';
+                            }
+                            
+                            const methodClass = method.toLowerCase();
                             html += `
                                 <li class="api-item">
-                                    <span class="api-method ${methodClass}">${api.method}</span>
-                                    <span class="api-path">${api.path}</span>
-                                    <h3>${api.name}</h3>
-                                    <p>${api.description || 'No description available'}</p>
-                                    <small>Group: ${api.group || 'Ungrouped'}</small>
+                                    <span class="api-method ${methodClass}">${method}</span>
+                                    <span class="api-path">${api.api_uri}</span>
+                                    <h3>${api.api_name}</h3>
+                                    <p>${api.api_tag || 'No description available'}</p>
+                                    <small>Group: ${api.group_name || 'Ungrouped'}</small>
                                 </li>
                             `;
                         });

@@ -58,21 +58,25 @@ async def get_api_list(
     # Transform Eolink API data to our model format
     api_list = []
     for api_data in apis_data:
+        # Check if api_data is a dictionary before using .get() method
+        if not isinstance(api_data, dict):
+            continue  # Skip this item if it's not a dictionary
+            
         api_info = ApiBasicInfo(
-            api_id=api_data.get("id", ""),
-            api_name=api_data.get("name", ""),
-            api_uri=api_data.get("path", ""),
-            api_status=api_data.get("status", 0),
-            api_request_type=api_data.get("request_type", 0),
+            api_id=api_data.get("api_id", ""),
+            api_name=api_data.get("api_name", ""),
+            api_uri=api_data.get("api_uri", ""),
+            api_status=api_data.get("api_status", 0),
+            api_request_type=api_data.get("api_request_type", 0),
             create_time=api_data.get("create_time", ""),
             group_id=api_data.get("group_id", 0),
-            api_update_time=api_data.get("update_time", ""),
+            api_update_time=api_data.get("api_update_time", ""),
             starred=api_data.get("starred", 0),
             order_num=api_data.get("order_num", 0),
             remove_time=api_data.get("remove_time"),
-            api_protocol=api_data.get("protocol", 0),
-            api_type=api_data.get("type", "http"),
-            api_manager_id=api_data.get("manager_id", 0),
+            api_protocol=api_data.get("api_protocol", 0),
+            api_type=api_data.get("api_type", "http"),
+            api_manager_id=api_data.get("api_manager_id", 0),
             update_user_id=api_data.get("update_user_id", 0),
             create_user_id=api_data.get("create_user_id", 0),
             group_path=api_data.get("group_path", ""),
