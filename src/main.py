@@ -41,7 +41,9 @@ async def index(request: Request):
     config = {
         "eolink_api_key": "*****" if config_manager.eolink_api_key else "",
         "eolink_base_url": config_manager.eolink_base_url,
-        "cache_ttl": config_manager.cache_ttl
+        "cache_ttl": config_manager.cache_ttl,
+        "space_id": config_manager.space_id,
+        "project_id": config_manager.project_id
     }
     
     return HTMLResponse(template.render(config=config))

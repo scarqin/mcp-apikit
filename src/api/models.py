@@ -59,6 +59,8 @@ class ConfigUpdateRequest(BaseModel):
     eolink_api_key: Optional[str] = Field(None, description="Eolink API key")
     eolink_base_url: Optional[str] = Field(None, description="Eolink base URL")
     cache_ttl: Optional[int] = Field(None, description="Cache TTL in seconds")
+    space_id: Optional[str] = Field(None, description="Eolink space ID")
+    project_id: Optional[str] = Field(None, description="Eolink project ID")
 
     class Config:
         orm_mode = True

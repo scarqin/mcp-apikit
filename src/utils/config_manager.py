@@ -25,14 +25,18 @@ class ConfigManager:
                 return {
                     "eolink_api_key": "",
                     "eolink_base_url": "https://api.eolink.com",
-                    "cache_ttl": 3600
+                    "cache_ttl": 3600,
+                    "space_id": "",
+                    "project_id": ""
                 }
         except Exception as e:
             print(f"Error loading config: {e}")
             return {
                 "eolink_api_key": "",
                 "eolink_base_url": "https://api.eolink.com",
-                "cache_ttl": 3600
+                "cache_ttl": 3600,
+                "space_id": "",
+                "project_id": ""
             }
     
     def save_config(self) -> bool:
@@ -93,3 +97,31 @@ class ConfigManager:
         Get the cache TTL in seconds.
         """
         return self.get("cache_ttl", 3600)
+        
+    @property
+    def space_id(self) -> str:
+        """
+        Get the Eolink space ID.
+        """
+        return self.get("space_id", "")
+        
+    @space_id.setter
+    def space_id(self, value: str) -> None:
+        """
+        Set the Eolink space ID.
+        """
+        self.set("space_id", value)
+        
+    @property
+    def project_id(self) -> str:
+        """
+        Get the Eolink project ID.
+        """
+        return self.get("project_id", "")
+        
+    @project_id.setter
+    def project_id(self, value: str) -> None:
+        """
+        Set the Eolink project ID.
+        """
+        self.set("project_id", value)

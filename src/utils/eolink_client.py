@@ -20,7 +20,7 @@ class EolinkClient:
         """
         return {
             "Content-Type": "application/json",
-            "X-Eo-Api-Key": self.config_manager.eolink_api_key
+            "Eo-Secret-Key": self.config_manager.eolink_api_key
         }
     
     def _make_request(self, endpoint: str, method: str = "GET", params: Dict[str, Any] = None, data: Dict[str, Any] = None) -> Dict[str, Any]:
@@ -55,20 +55,37 @@ class EolinkClient:
         current_time = time.time()
         return (current_time - cache_time) < self.config_manager.cache_ttl
     
-    def get_all_apis(self) -> List[Dict[str, Any]]:
+    def get_all_apis(self, space_id: str, project_id: str, page: int = 1, size: int = 20, 
+                     keyword: str = None, group_id: int = None, 
+                     project_version_id: str = None, branch_id: str = None) -> List[Dict[str, Any]]:
         """
         Get all APIs from Eolink.
         Returns a list of API objects.
         """
-        cache_key = "all_apis"
+        cache_key = f"all_apis_{space_id}_{project_id}_{page}_{size}_{keyword}_{group_id}_{project_version_id}_{branch_id}"
         
         # Check cache first
         if cache_key in self.cache and self._is_cache_valid(cache_key):
             return self.cache[cache_key]
         
         # Make API request if cache is invalid or missing
-        endpoint = "/openapi/apis"
-        response = self._make_request(endpoint)
+        endpoint = "/v3/api-management/apis"
+        params = {
+            "space_id": space_id,
+            "project_id": project_id,
+            "page": page,
+            "size": size,
+        }
+        if keyword:
+            params["keyword"] = keyword
+        if group_id:
+            params["group_id"] = group_id
+        if project_version_id:
+            params["project_version_id"] = project_version_id
+        if branch_id:
+            params["branch_id"] = branch_id
+        
+        response = self._make_request(endpoint, params=params)
         
         if "error" in response:
             return []

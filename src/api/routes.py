@@ -31,7 +31,13 @@ async def get_api_list(eolink_client: EolinkClient = Depends(get_eolink_client))
     if not eolink_client.config_manager.eolink_api_key:
         raise HTTPException(status_code=400, detail="Eolink API key not configured")
     
-    apis_data = eolink_client.get_all_apis()
+    if not eolink_client.config_manager.space_id or not eolink_client.config_manager.project_id:
+        raise HTTPException(status_code=400, detail="Eolink space_id and project_id must be configured")
+    
+    apis_data = eolink_client.get_all_apis(
+        space_id=eolink_client.config_manager.space_id,
+        project_id=eolink_client.config_manager.project_id
+    )
     
     # Transform Eolink API data to our model format
     api_list = []
@@ -112,6 +118,12 @@ async def update_config(config_request: ConfigUpdateRequest, config_manager: Con
     
     if config_request.cache_ttl is not None:
         update_dict["cache_ttl"] = config_request.cache_ttl
+        
+    if config_request.space_id is not None:
+        update_dict["space_id"] = config_request.space_id
+        
+    if config_request.project_id is not None:
+        update_dict["project_id"] = config_request.project_id
     
     config_manager.update(update_dict)
     config_manager.save_config()
@@ -126,7 +138,9 @@ async def get_config(config_manager: ConfigManager = Depends(get_config_manager)
     return {
         "eolink_api_key": "*****" if config_manager.eolink_api_key else "",
         "eolink_base_url": config_manager.eolink_base_url,
-        "cache_ttl": config_manager.cache_ttl
+        "cache_ttl": config_manager.cache_ttl,
+        "space_id": config_manager.space_id,
+        "project_id": config_manager.project_id
     }
 
 @router.post("/clear-cache")
