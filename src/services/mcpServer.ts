@@ -75,9 +75,9 @@ class Server {
 
     this.server.tool(
       "list_apis",
-      { projectId: z.string().describe("Project ID") },
-      async ({ projectId }) => {
-        const apis = await this.getApis(projectId);
+      { projectId: z.string().describe("Project ID")  , spaceId: z.string().optional().describe("Space ID") },
+      async ({ projectId, spaceId }) => {
+        const apis = await this.getApis(projectId, spaceId);
         return {
           content: [{ 
             type: "text", 
@@ -252,11 +252,11 @@ class Server {
   /**
    * Get all APIs for a project (with caching)
    */
-  private async getApis(projectId: string): Promise<Api[]> {
+  private async getApis(projectId: string, spaceId?: string): Promise<Api[]> {
     // Check cache first
     if (!this.apis[projectId]) {
       try {
-        this.apis[projectId] = await eolinkService.getApis(projectId);
+        this.apis[projectId] = await eolinkService.getApis(projectId, spaceId);
         console.log(`Loaded ${this.apis[projectId].length} APIs for project ${projectId}`);
       } catch (error) {
         console.error(`Error loading APIs for project ${projectId}:`, error);

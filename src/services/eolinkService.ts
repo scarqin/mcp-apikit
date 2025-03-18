@@ -10,6 +10,7 @@ class EolinkService {
 
   constructor() {
     this.apiKey = process.env.EOLINK_API_KEY || '';
+    
     this.baseUrl = process.env.EOLINK_BASE_URL || 'https://api.eolink.com';
     
     if (!this.apiKey) {
@@ -49,13 +50,22 @@ class EolinkService {
 
   /**
    * Get all APIs for a project
+   * @param spaceId Optional space ID
+   * @param projectId Project ID
    */
-  async getApis(projectId: string): Promise<Api[]> {
+  async getApis(projectId: string, spaceId?: string): Promise<Api[]> {
     try {
-      const response = await axios.get(`${this.baseUrl}/v3/api-management/apis?project_id=${projectId}`, {
+      let url = `${this.baseUrl}/v3/api-management/apis?project_id=${projectId}&page=1&size=999`;
+      
+      // Add space_id parameter if provided
+      if (spaceId) {
+        url += `&space_id=${spaceId}`;
+      }
+      
+      const response = await axios.get(url, {
         headers: this.getHeaders(),
       });
-      return response.data.data || [];
+      return response.data.items  || [];
     } catch (error) {
       console.error(`Error fetching APIs for project ${projectId}:`, error);
       return [];
@@ -157,7 +167,7 @@ class EolinkService {
    */
   private getHeaders(): Record<string, string> {
     return {
-      'project_id': `${this.apiKey}`,
+      'Eo-Secret-Key': `${this.apiKey}`,
       'Content-Type': 'application/json',
       'Accept': 'application/json',
     };
