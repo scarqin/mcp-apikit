@@ -178,6 +178,14 @@ def create_default_templates():
                     <input type="text" id="eolink-base-url" placeholder="Enter Eolink Base URL" value="{{ config.eolink_base_url }}">
                 </div>
                 <div class="form-group">
+                    <label for="space-id">Space ID</label>
+                    <input type="text" id="space-id" placeholder="Enter Eolink Space ID" value="{{ config.space_id }}">
+                </div>
+                <div class="form-group">
+                    <label for="project-id">Project ID</label>
+                    <input type="text" id="project-id" placeholder="Enter Eolink Project ID" value="{{ config.project_id }}">
+                </div>
+                <div class="form-group">
                     <label for="cache-ttl">Cache TTL (seconds)</label>
                     <input type="number" id="cache-ttl" placeholder="Cache time-to-live in seconds" value="{{ config.cache_ttl }}">
                 </div>
@@ -238,6 +246,8 @@ def create_default_templates():
                 
                 const apiKey = document.getElementById('eolink-api-key').value;
                 const baseUrl = document.getElementById('eolink-base-url').value;
+                const spaceId = document.getElementById('space-id').value;
+                const projectId = document.getElementById('project-id').value;
                 const cacheTtl = document.getElementById('cache-ttl').value;
                 
                 try {
@@ -249,6 +259,8 @@ def create_default_templates():
                         body: JSON.stringify({
                             eolink_api_key: apiKey,
                             eolink_base_url: baseUrl,
+                            space_id: spaceId,
+                            project_id: projectId,
                             cache_ttl: parseInt(cacheTtl)
                         })
                     });
