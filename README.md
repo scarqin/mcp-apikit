@@ -45,16 +45,28 @@ pnpm start
 
 The server will start on the port specified in your `.env` file (default: 3000).
 
+### Debug
+ 
+```bash
+npx @modelcontextprotocol/inspector node dist/index.js
+```
 ### Connecting from Windsurf IDE
 
+```bash
+pnpm build
+```
 In your Windsurf IDE settings, add a new MCP server with the following configuration:
 
 ```json
-{
-  "name": "API Kit",
-  "type": "http",
-  "url": "http://localhost:3000"
-}
+    "mcpServers": {
+      "apikit": {
+        "command": "node",
+        "args": [
+          "/Users/{userName}/Documents/mcp-apikit/dist/index.js"
+        ],
+        "env": {}
+      }
+    }
 ```
 
 ## API Resources

@@ -3,14 +3,14 @@
  * 
  * This file starts the MCP server for Eolink OpenAPI integration
  */
-import express from 'express';
+import express, { Request as ExpressRequest, Response as ExpressResponse } from 'express';
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import mcpServer from './services/mcpServer.js';
 
 // Load environment variables
-const PORT = process.env.PORT || 3000;
-const TRANSPORT = process.env.TRANSPORT || 'http'; // 'http' or 'stdio'
+const PORT = process.env.PORT || 3001;
+const TRANSPORT = process.env.TRANSPORT || 'stdio'; // 'http' or 'stdio'
 
 /**
  * Start the MCP server with HTTP/SSE transport
@@ -20,12 +20,12 @@ async function startHttpServer() {
   app.use(express.json());
 
   // Set up basic routes
-  app.get('/', (req, res) => {
-    res.send('MCP-APIKit Server is running. Connect via Windsurf IDE.');
+  app.get('/', (req: ExpressRequest, res: any) => {
+    res.send('MCP-APIKit Server is running. Connect via Windsurf IDE1.');
   });
 
   // Set up SSE endpoint for MCP
-  app.get('/sse', async (req, res) => {
+  app.get('/sse', async (req: ExpressRequest, res: any) => {
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
@@ -45,7 +45,7 @@ async function startHttpServer() {
   });
 
   // Set up message endpoint for client-to-server communication
-  app.post('/messages', async (req, res) => {
+  app.post('/messages', async (req: ExpressRequest, res: any) => {
     const transport = app.locals.transport;
     if (!transport) {
       return res.status(400).json({ error: 'No active SSE connection' });
