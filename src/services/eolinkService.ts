@@ -7,9 +7,13 @@ import { Api, Project, ApiTestRequest, ApiTestResponse } from '../models/api.js'
 class EolinkService {
   private apiKey: string;
   private baseUrl: string;
+  private spaceId: string;
+  private projectId: string;
 
   constructor() {
     this.apiKey = process.env.EOLINK_API_KEY || '';
+    this.spaceId = process.env.SPACE_ID || '';
+    this.projectId = process.env.PROJECT_ID || '';
     
     this.baseUrl = process.env.EOLINK_BASE_URL || 'https://api.eolink.com';
     
@@ -53,7 +57,7 @@ class EolinkService {
    * @param spaceId Optional space ID
    * @param projectId Project ID
    */
-  async getApis(projectId: string, spaceId?: string): Promise<Api[]> {
+  async getApis(projectId: string=this.projectId, spaceId: string=this.spaceId): Promise<Api[]> {
     try {
       let url = `${this.baseUrl}/v3/api-management/apis?project_id=${projectId}&page=1&size=999`;
       
@@ -65,7 +69,7 @@ class EolinkService {
       const response = await axios.get(url, {
         headers: this.getHeaders(),
       });
-      return response.data.items  || [];
+      return  response.data.data.items || [];
     } catch (error) {
       console.error(`Error fetching APIs for project ${projectId}:`, error);
       return [];
