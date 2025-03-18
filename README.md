@@ -40,10 +40,6 @@ MCP-APIKit 是一个微服务控制平面（Microservice Control Plane）服务�
    ```bash
    python run.py
    ```
-   或 
-   ```
-   source venv/bin/activate && python run.py
-   ```
 
 ## 使用方法
 
